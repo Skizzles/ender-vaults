@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 repositories {
@@ -17,10 +17,11 @@ dependencies {
     implementation project(':v1_17_R1')
     implementation project(':v1_18_R1')
     implementation project(':v1_19_R2')
+    implementation project(':v1_20_R1')
     compileOnly 'org.spigotmc:spigot:1.19-R0.1-SNAPSHOT'
-    implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.6.2'
-    implementation 'de.tr7zw:item-nbt-api:2.11.2'
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.2'
+    implementation 'de.tr7zw:item-nbt-api:2.11.3'
 }
 
 processResources {
@@ -32,7 +33,7 @@ processResources {
 }
 
 shadowJar {
-    archiveName = "EnderVaults-Bukkit-v${project.ext.version}.jar"
+    archiveFileName = "EnderVaults-Bukkit-v${project.ext.version}.jar"
 
     relocate 'de.tr7zw.changeme.nbtapi', 'com.github.dig.endervaults.lib.nbt'
     relocate 'com.zaxxer.hikari', 'com.github.dig.endervaults.lib.hikari'

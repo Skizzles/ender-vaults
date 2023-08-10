@@ -10,8 +10,8 @@ subprojects {
     group 'com.github.dig.endervaults'
     version '1.0-SNAPSHOT'
 
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
 
     task copyToBuildsDir(type: Copy) {
         from 'build/libs'
