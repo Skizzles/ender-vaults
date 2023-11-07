@@ -1,5 +1,5 @@
 name: EnderVaults
-version: ${pluginVersion}
+version: ${version}
 main: com.github.dig.endervaults.bukkit.EVBukkitPlugin
 author: Digital
 api-version: 1.13

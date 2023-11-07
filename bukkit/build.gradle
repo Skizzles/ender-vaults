@@ -1,11 +1,11 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 repositories {
-    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
-    maven { url = 'https://repo.codemc.org/repository/maven-public/' }
-    maven { url = 'https://repo.codemc.org/repository/nms/' }
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url 'https://repo.codemc.org/repository/maven-public/' }
+    maven { url 'https://repo.codemc.org/repository/nms/' }
 }
 
 dependencies {
@@ -24,20 +24,23 @@ dependencies {
 }
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from(sourceSets.main.resources.srcDirs) {
-        expand 'pluginVersion': project.ext.version
-        duplicatesStrategy = 'include'
         include 'plugin.yml'
+        expand(rootProject.properties)
     }
 }
 
 shadowJar {
-    archiveName = "EnderVaults-Bukkit-v${project.ext.version}.jar"
+    archiveClassifier.set('')
 
-    relocate 'de.tr7zw.changeme.nbtapi', 'com.github.dig.endervaults.lib.nbt'
-    relocate 'com.zaxxer.hikari', 'com.github.dig.endervaults.lib.hikari'
-    relocate 'org.mariadb.jdbc', 'com.github.dig.endervaults.lib.mariadb'
-    relocate 'org.javatuples', 'com.github.dig.endervaults.lib.javatuples'
+    relocate 'de.tr7zw.changeme.nbtapi', project.group + '.lib.nbt'
+    relocate 'com.zaxxer.hikari', project.group + '.lib.hikari'
+    relocate 'org.mariadb.jdbc', project.group + '.lib.mariadb'
+    relocate 'org.javatuples', project.group + '.lib.javatuples'
 }
 
-build.dependsOn shadowJar
+jar {
+    enabled = false
+    dependsOn (shadowJar)
+}
