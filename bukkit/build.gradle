@@ -6,23 +6,19 @@ repositories {
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url 'https://oss.sonatype.org/content/repositories/central' }
-    maven { url 'https://repo.codemc.org/repository/maven-public/' }
     maven { url 'https://repo.codemc.org/repository/nms/' }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     implementation project(':api')
-    implementation project(':nms')
-    implementation project(':v1_8_R3')
-    implementation project(':v1_11_R1')
-    implementation project(':v1_14_R1')
-    implementation project(':v1_17_R1')
-    implementation project(':v1_18_R1')
-    implementation project(':v1_19_R2')
+
     compileOnly 'org.spigotmc:spigot:1.20.2-R0.1-SNAPSHOT'
+
     implementation 'com.zaxxer:HikariCP:5.1.0'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.2.0'
-    implementation 'de.tr7zw:item-nbt-api:3.12.1'
+    implementation 'com.saicone.rtag:rtag:1.4.3'
+    implementation 'com.saicone.rtag:rtag-item:1.4.3'
 }
 
 processResources {
@@ -36,10 +32,14 @@ processResources {
 shadowJar {
     archiveClassifier.set('')
 
-    relocate 'de.tr7zw.changeme.nbtapi', project.group + '.lib.nbt'
     relocate 'com.zaxxer.hikari', project.group + '.lib.hikari'
     relocate 'org.mariadb.jdbc', project.group + '.lib.mariadb'
+    relocate 'com.saicone.rtag', project.group + '.lib.rtag'
     relocate 'org.javatuples', project.group + '.lib.javatuples'
+
+    minimize {
+        exclude(dependency('org.mariadb.jdbc:mariadb-java-client:.*'))
+    }
 }
 
 jar {

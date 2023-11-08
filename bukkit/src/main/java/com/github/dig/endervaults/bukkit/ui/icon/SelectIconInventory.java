@@ -4,7 +4,7 @@ import com.github.dig.endervaults.api.VaultPluginProvider;
 import com.github.dig.endervaults.api.lang.Lang;
 import com.github.dig.endervaults.api.vault.Vault;
 import com.github.dig.endervaults.bukkit.EVBukkitPlugin;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import com.saicone.rtag.RtagItem;
 import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -54,14 +54,13 @@ public class SelectIconInventory {
                     ItemFlag.HIDE_PLACED_ON);
             item.setItemMeta(meta);
 
-            NBTItem nbtItem = new NBTItem(item);
-            nbtItem.setBoolean(SelectIconConstants.NBT_ICON_ITEM, true);
-            nbtItem.setString(SelectIconConstants.NBT_ICON_ID, vault.getId().toString());
-            nbtItem.setString(SelectIconConstants.NBT_ICON_OWNER_UUID, vault.getOwner().toString());
-
             int slot = inventory.firstEmpty();
             if (slot > -1) {
-                inventory.setItem(inventory.firstEmpty(), nbtItem.getItem());
+                inventory.setItem(inventory.firstEmpty(), RtagItem.edit(item, tag -> {
+                    tag.set(true, SelectIconConstants.NBT_ICON_ITEM);
+                    tag.set(vault.getId(), SelectIconConstants.NBT_ICON_ID);
+                    tag.set(vault.getOwner(), SelectIconConstants.NBT_ICON_OWNER_UUID);
+                }));
             } else {
                 log.log(Level.INFO, "[EnderVaults] Unable to find available spot to put item in, please reconfigure select icon settings.");
             }

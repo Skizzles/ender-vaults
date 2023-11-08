@@ -6,12 +6,9 @@ import com.github.dig.endervaults.api.permission.UserPermission;
 import com.github.dig.endervaults.api.storage.DataStorage;
 import com.github.dig.endervaults.api.vault.VaultPersister;
 import com.github.dig.endervaults.api.vault.metadata.VaultMetadataRegistry;
-import com.github.dig.endervaults.nms.MinecraftVersion;
 import com.github.dig.endervaults.api.vault.VaultRegistry;
 
 public interface EnderVaultsPlugin {
-
-    MinecraftVersion getVersion();
 
     DataFile getLangFile();
 

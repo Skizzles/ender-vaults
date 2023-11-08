@@ -8,8 +8,8 @@ import com.github.dig.endervaults.api.vault.Vault;
 import com.github.dig.endervaults.api.vault.VaultRegistry;
 import com.github.dig.endervaults.api.vault.metadata.VaultDefaultMetadata;
 import com.github.dig.endervaults.bukkit.EVBukkitPlugin;
-import com.github.dig.endervaults.nms.MinecraftVersion;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import com.saicone.rtag.RtagItem;
+import com.saicone.rtag.util.ServerInstance;
 import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,8 +33,6 @@ public class SelectorInventory {
     private final EVBukkitPlugin plugin = (EVBukkitPlugin) VaultPluginProvider.getPlugin();
     private final VaultRegistry registry = plugin.getRegistry();
     private final UserPermission<Player> permission = plugin.getPermission();
-    private final MinecraftVersion version = plugin.getVersion();
-    private final boolean useLegacyMaterials = version.ordinal() < MinecraftVersion.v1_13_R1.ordinal();
 
     private final UUID ownerUUID;
     private final int page;
@@ -132,7 +130,7 @@ public class SelectorInventory {
         ItemStack item = new ItemStack(material, 1);
 
         // Use old material data method (< 1.13)
-        if (useLegacyMaterials && data > 0 && icon == null) {
+        if (ServerInstance.isLegacy && data > 0 && icon == null) {
             item.setDurability((byte) data);
         }
 
@@ -159,22 +157,20 @@ public class SelectorInventory {
 
         item.setItemMeta(meta);
 
-        NBTItem nbtItem = new NBTItem(item);
-        nbtItem.setBoolean(SelectorConstants.NBT_VAULT_ITEM, true);
-        if (id != null) {
-            nbtItem.setString(SelectorConstants.NBT_VAULT_ID, id.toString());
-        }
-
-        nbtItem.setString(SelectorConstants.NBT_VAULT_OWNER_UUID, ownerUUID.toString());
-        nbtItem.setInteger(SelectorConstants.NBT_VAULT_ORDER, order);
-
-        return nbtItem.getItem();
+        return RtagItem.edit(item, tag -> {
+            tag.set(true, SelectorConstants.NBT_VAULT_ITEM);
+            if (id != null) {
+                tag.set(id, SelectorConstants.NBT_VAULT_ID);
+            }
+            tag.set(ownerUUID, SelectorConstants.NBT_VAULT_OWNER_UUID);
+            tag.set(order, SelectorConstants.NBT_VAULT_ORDER);
+        });
     }
 
     private Material getGlass(int filled, int total) {
         double percent = ((double) filled / (double) total) * 100;
 
-        if (useLegacyMaterials) {
+        if (ServerInstance.isLegacy) {
             return Material.valueOf("STAINED_GLASS_PANE");
         } else if (percent >= 100) {
             return Material.RED_STAINED_GLASS_PANE;
@@ -216,7 +212,7 @@ public class SelectorInventory {
                 break;
             case PANE_BY_FILL:
             default:
-                material = useLegacyMaterials ? Material.valueOf("STAINED_GLASS_PANE") : Material.GRAY_STAINED_GLASS_PANE;
+                material = ServerInstance.isLegacy ? Material.valueOf("STAINED_GLASS_PANE") : Material.GRAY_STAINED_GLASS_PANE;
                 data = 7;
                 break;
         }
@@ -224,7 +220,7 @@ public class SelectorInventory {
         ItemStack item = new ItemStack(material, 1);
 
         // Use old material data method (< 1.13)
-        if (useLegacyMaterials && data > 0) {
+        if (ServerInstance.isLegacy && data > 0) {
             item.setDurability((byte) data);
         }
 
@@ -247,10 +243,9 @@ public class SelectorInventory {
 
         item.setItemMeta(meta);
 
-        NBTItem nbtItem = new NBTItem(item);
-        nbtItem.setBoolean(SelectorConstants.NBT_VAULT_ITEM, true);
-
-        return nbtItem.getItem();
+        return RtagItem.edit(item, tag -> {
+            tag.set(true, SelectorConstants.NBT_VAULT_ITEM);
+        });
     }
 
     public void launchFor(Player player) {

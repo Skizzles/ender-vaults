@@ -4,7 +4,7 @@ import com.github.dig.endervaults.api.VaultPluginProvider;
 import com.github.dig.endervaults.api.vault.VaultRegistry;
 import com.github.dig.endervaults.api.vault.metadata.VaultDefaultMetadata;
 import com.github.dig.endervaults.bukkit.ui.selector.SelectorInventory;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import com.saicone.rtag.RtagItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,11 +28,11 @@ public class SelectIconListener implements Listener {
         ItemStack item = event.getCurrentItem();
 
         if (inventory != null && item != null && item.getType() != Material.AIR) {
-            NBTItem nbtItem = new NBTItem(item);
-            if (nbtItem.hasKey(SelectIconConstants.NBT_ICON_ITEM) && nbtItem.hasKey(SelectIconConstants.NBT_ICON_ID)) {
+            RtagItem tag = RtagItem.of(item);
+            if (tag.hasTag(SelectIconConstants.NBT_ICON_ITEM) && tag.hasTag(SelectIconConstants.NBT_ICON_ID)) {
                 event.setCancelled(true);
-                UUID vaultID = UUID.fromString(nbtItem.getString(SelectIconConstants.NBT_ICON_ID));
-                UUID vaultOwnerUUID = UUID.fromString(nbtItem.getString(SelectIconConstants.NBT_ICON_OWNER_UUID));
+                UUID vaultID = tag.getOptional(SelectIconConstants.NBT_ICON_ID).asUuid();
+                UUID vaultOwnerUUID = tag.getOptional(SelectIconConstants.NBT_ICON_OWNER_UUID).asUuid();
 
                 registry.get(vaultOwnerUUID, vaultID).ifPresent(vault -> vault.getMetadata().put(VaultDefaultMetadata.ICON.getKey(), item.getType().toString()));
                 new SelectorInventory(vaultOwnerUUID, 1).launchFor(player);
@@ -44,8 +44,7 @@ public class SelectIconListener implements Listener {
     public void onMove(InventoryMoveItemEvent event) {
         ItemStack item = event.getItem();
         if (item != null && item.getType() != Material.AIR) {
-            NBTItem nbtItem = new NBTItem(item);
-            if (nbtItem.hasKey(SelectIconConstants.NBT_ICON_ITEM)) {
+            if (RtagItem.of(item).hasTag(SelectIconConstants.NBT_ICON_ITEM)) {
                 event.setCancelled(true);
             }
         }
