@@ -130,7 +130,7 @@ public class SelectorInventory {
         ItemStack item = new ItemStack(material, 1);
 
         // Use old material data method (< 1.13)
-        if (ServerInstance.isLegacy && data > 0 && icon == null) {
+        if (ServerInstance.Release.LEGACY && data > 0 && icon == null) {
             item.setDurability((byte) data);
         }
 
@@ -152,7 +152,7 @@ public class SelectorInventory {
                 ItemFlag.HIDE_UNBREAKABLE,
                 ItemFlag.HIDE_ENCHANTS,
                 ItemFlag.HIDE_DESTROYS,
-                ItemFlag.HIDE_POTION_EFFECTS,
+                ItemFlag.values()[5], // HIDE_POTION_EFFECTS
                 ItemFlag.HIDE_PLACED_ON);
 
         item.setItemMeta(meta);
@@ -170,7 +170,7 @@ public class SelectorInventory {
     private Material getGlass(int filled, int total) {
         double percent = ((double) filled / (double) total) * 100;
 
-        if (ServerInstance.isLegacy) {
+        if (ServerInstance.Release.LEGACY) {
             return Material.valueOf("STAINED_GLASS_PANE");
         } else if (percent >= 100) {
             return Material.RED_STAINED_GLASS_PANE;
@@ -212,7 +212,7 @@ public class SelectorInventory {
                 break;
             case PANE_BY_FILL:
             default:
-                material = ServerInstance.isLegacy ? Material.valueOf("STAINED_GLASS_PANE") : Material.GRAY_STAINED_GLASS_PANE;
+                material = ServerInstance.Release.LEGACY ? Material.valueOf("STAINED_GLASS_PANE") : Material.GRAY_STAINED_GLASS_PANE;
                 data = 7;
                 break;
         }
@@ -220,7 +220,7 @@ public class SelectorInventory {
         ItemStack item = new ItemStack(material, 1);
 
         // Use old material data method (< 1.13)
-        if (ServerInstance.isLegacy && data > 0) {
+        if (ServerInstance.Release.LEGACY && data > 0) {
             item.setDurability((byte) data);
         }
 
@@ -238,7 +238,7 @@ public class SelectorInventory {
                 ItemFlag.HIDE_UNBREAKABLE,
                 ItemFlag.HIDE_ENCHANTS,
                 ItemFlag.HIDE_DESTROYS,
-                ItemFlag.HIDE_POTION_EFFECTS,
+                ItemFlag.values()[5], // HIDE_POTION_EFFECTS
                 ItemFlag.HIDE_PLACED_ON);
 
         item.setItemMeta(meta);

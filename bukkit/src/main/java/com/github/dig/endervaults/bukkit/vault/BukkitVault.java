@@ -3,6 +3,7 @@ package com.github.dig.endervaults.bukkit.vault;
 import com.github.dig.endervaults.api.util.VaultSerializable;
 import com.github.dig.endervaults.api.vault.Vault;
 import com.saicone.rtag.item.ItemObject;
+import com.saicone.rtag.item.ItemTagStream;
 import com.saicone.rtag.stream.TStreamTools;
 import com.saicone.rtag.tag.TagCompound;
 import com.saicone.rtag.tag.TagList;
@@ -105,7 +106,7 @@ public class BukkitVault implements Vault, VaultSerializable {
             for (int i = 0; i < list.size() && i < items.length; i++) {
                 Object compound = list.get(i);
                 if (compound != null && !TagCompound.getValue(compound).isEmpty()) {
-                    items[i] = ItemObject.asBukkitCopy(ItemObject.newItem(compound));
+                    items[i] = ItemTagStream.INSTANCE.fromCompound(compound);
                 }
             }
         } catch (IOException e) {

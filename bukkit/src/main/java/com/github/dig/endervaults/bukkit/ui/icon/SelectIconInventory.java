@@ -50,7 +50,7 @@ public class SelectIconInventory {
                     ItemFlag.HIDE_UNBREAKABLE,
                     ItemFlag.HIDE_ENCHANTS,
                     ItemFlag.HIDE_DESTROYS,
-                    ItemFlag.HIDE_POTION_EFFECTS,
+                    ItemFlag.values()[5], // HIDE_POTION_EFFECTS
                     ItemFlag.HIDE_PLACED_ON);
             item.setItemMeta(meta);
 
