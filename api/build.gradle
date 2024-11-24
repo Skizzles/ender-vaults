@@ -1,7 +1,3 @@
 dependencies {
-    implementation project(':nms')
-    implementation project(':v1_8_R3')
-    implementation project(':v1_11_R1')
-    implementation project(':v1_14_R1')
-    implementation project(':v1_17_R1')
+
 }

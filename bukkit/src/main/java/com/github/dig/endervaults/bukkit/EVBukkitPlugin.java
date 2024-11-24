@@ -24,22 +24,11 @@ import com.github.dig.endervaults.bukkit.vault.BukkitVaultPersister;
 import com.github.dig.endervaults.bukkit.vault.metadata.BukkitVaultMetadataRegistry;
 import com.github.dig.endervaults.bukkit.vault.metadata.IntegerMetadataConverter;
 import com.github.dig.endervaults.bukkit.vault.metadata.StringMetadataConverter;
-import com.github.dig.endervaults.nms.InvalidMinecraftVersionException;
-import com.github.dig.endervaults.nms.MinecraftVersion;
 import com.github.dig.endervaults.api.vault.VaultRegistry;
 import com.github.dig.endervaults.bukkit.command.VaultCommand;
 import com.github.dig.endervaults.bukkit.file.BukkitDataFile;
 import com.github.dig.endervaults.bukkit.lang.BukkitLanguage;
 import com.github.dig.endervaults.bukkit.vault.BukkitVaultRegistry;
-import com.github.dig.endervaults.nms.NMSProvider;
-import com.github.dig.endervaults.nms.VaultNMS;
-import com.github.dig.endervaults.nms.v1_11_R1.v1_11_R1NMS;
-import com.github.dig.endervaults.nms.v1_14_R1.v1_14_R1NMS;
-import com.github.dig.endervaults.nms.v1_17_R1.v1_17_R1NMS;
-import com.github.dig.endervaults.nms.v1_18_R1.*;
-import com.github.dig.endervaults.nms.v1_19_R2.*;
-import com.github.dig.endervaults.nms.v1_20_R1.v1_20_R1NMS;
-import com.github.dig.endervaults.nms.v1_8_R3.v1_8_R3NMS;
 import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,7 +37,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
@@ -68,17 +56,6 @@ public class EVBukkitPlugin extends JavaPlugin implements EnderVaultsPlugin {
     private Metrics metrics;
 
     private BukkitTask autoSaveTask;
-
-    @Override
-    @Nullable
-    public MinecraftVersion getVersion() {
-        String version = Bukkit.getServer().getClass().getPackage().getName();
-        try {
-            return MinecraftVersion.valueOf(version.substring(version.lastIndexOf('.') + 1));
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-    }
 
     @Override
     public DataFile<FileConfiguration> getLangFile() {
@@ -155,62 +132,12 @@ public class EVBukkitPlugin extends JavaPlugin implements EnderVaultsPlugin {
     private boolean setProviders() {
         try {
             VaultPluginProvider.set(this);
-            setNMSProvider();
             return true;
-        } catch (PluginAlreadySetException | InvalidMinecraftVersionException e) {
+        } catch (PluginAlreadySetException e) {
             log.log(Level.SEVERE, "[EnderVaults] Unable to set providers, disabling...", e);
             Bukkit.getPluginManager().disablePlugin(this);
         }
         return false;
-    }
-
-    private void setNMSProvider() throws InvalidMinecraftVersionException {
-        MinecraftVersion version = getVersion();
-        if (version == null) {
-            throw new InvalidMinecraftVersionException("Version of Minecraft not supported.");
-        }
-
-        VaultNMS bridge;
-        switch (version) {
-            case v1_8_R3:
-            case v1_9_R1:
-            case v1_9_R2:
-            case v1_10_R1:
-                bridge = new v1_8_R3NMS();
-                break;
-            case v1_11_R1:
-            case v1_12_R1:
-            case v1_13_R1:
-            case v1_13_R2:
-                bridge = new v1_11_R1NMS();
-                break;
-            case v1_14_R1:
-            case v1_15_R1:
-            case v1_16_R1:
-            case v1_16_R2:
-            case v1_16_R3:
-                bridge = new v1_14_R1NMS();
-                break;
-            case v1_17_R1:
-                bridge = new v1_17_R1NMS();
-                break;
-            case v1_18_R1:
-            case v1_18_R2:
-            case v1_19_R1:
-                bridge = new v1_18_R1NMS();
-                break;
-            case v1_19_R2:
-            case v1_19_R3:
-                bridge = new v1_19_R2NMS();
-                break;
-            case v1_20_R1:
-                bridge = new v1_20_R1NMS();
-                break;
-            default:
-                throw new InvalidMinecraftVersionException("Minecraft " + version.name() + " not supported.");
-        }
-
-        NMSProvider.set(bridge, version);
     }
 
     private void loadConfiguration() {
